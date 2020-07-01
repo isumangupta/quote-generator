@@ -5,63 +5,54 @@ const twitterBtn = document.getElementById('twitter');
 const newQuoteBtn = document.getElementById('new-quote');
 const loader = document.getElementById('loader');
 
-
-// Show Loading
-function loading() {
+function showLoadingSpinner() {
     loader.hidden = false;
     quoteContainer.hidden = true;
 }
 
-// Hide Loading
-function complete() {
+function removeLoadingSpinner() {
     if(!loader.hidden) {
         quoteContainer.hidden = false;
         loader.hidden = true;
     }    
 }
 
-// Get Quote From API
-async function getQuote() {
-    // Start Loading and Hide Quote
-    loading();
+function tweetQuote() {
+    const quote = quoteText.innerText;
+    const author = authorText.innerText;
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${quote} - ${author}`;
+    window.open(twitterUrl, '_blank');
+}
 
-    // Building API URL
+async function getQuote() {
+    showLoadingSpinner();
+    // We need to use a Proxy URL to make our API call in order to avoid errors
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
     const apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
 
     try {
-        // Fetching the API URL
         const response = await fetch(proxyUrl + apiUrl);
         const data = await response.json();
         
-        // If Author is blank, add 'Unknown'
+        // Check if Author field is blank and replace it with 'Unknown'
         if(data.quoteAuthor === '') {
             authorText.innerText = 'Unknown';
         } else {
             authorText.innerText = data.quoteAuthor;            
         }
 
-        // Reduce font size for long quotes
+        // Dynamically reduce font size for long quotes
         if(data.quoteText.length > 120) {
             quoteText.classList.add('long-quote');
         } else {
             quoteText.classList.remove('long-quote');
         }
+        
         quoteText.innerText = data.quoteText;
-
-        // Stop Loading and Show Quote
-        complete();
+        removeLoadingSpinner();
     } catch(error) {
         getQuote();
     }
-}
-
-// Tweet Quote
-function tweetQuote() {
-    const quote = quoteText.innerText;
-    const author = authorText.innerText;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${quote} - ${author}`;
-    window.open(twitterUrl, '_blank');
 }
 
 // Event Listeners
