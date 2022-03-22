@@ -6,4 +6,4 @@ Learning:
 2. How to integrate 3rd-party API's
 3. How to share using social media
 
-You will find the working project here [DEMO](https://suman-gupta.github.io/quote-generator).
+You will find the working project here [DEMO](https://isumangupta.github.io/infinite-scroll/).
